@@ -1,32 +1,39 @@
-import 'package:book_review/views/register_view.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 
-class LoginView extends StatelessWidget {
-  const LoginView({Key? key}) : super(key: key);
+import '../widgets/back_button.dart';
+
+class RegisterView extends StatelessWidget {
+  const RegisterView({Key? key}) : super(key: key);
   static final _loginFormKey = GlobalKey<FormState>();
+  static TextEditingController _nameController = TextEditingController();
   static TextEditingController _emailController = TextEditingController();
   static TextEditingController _passwordController = TextEditingController();
+  static TextEditingController _passwordCtrlController =
+      TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                  width: MediaQuery.of(context).size.width * 0.35,
-                  child:
-                      Image.asset('assets/images/logos/BookReview-Icon.png')),
-              SizedBox(height: 24),
-              Text('GİRİŞ YAP',
-                  style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                      color: Theme.of(context).primaryColor,
-                      fontWeight: FontWeight.bold)),
-              SizedBox(height: 24),
-              buildLoginForm(context, _loginFormKey)
-            ],
-          ),
+          child: Stack(children: [
+            BackButtonWidget(),
+            Column(
+              children: [
+                Container(
+                    width: MediaQuery.of(context).size.width * 0.35,
+                    child:
+                        Image.asset('assets/images/logos/BookReview-Icon.png')),
+                const SizedBox(height: 24),
+                Text('KAYIT OL',
+                    style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                        color: Theme.of(context).primaryColor,
+                        fontWeight: FontWeight.bold)),
+                const SizedBox(height: 24),
+                buildLoginForm(context, _loginFormKey)
+              ],
+            ),
+          ]),
         ),
       ),
     );
@@ -38,6 +45,29 @@ class LoginView extends StatelessWidget {
       key: _loginFormKey,
       child: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.75,
+              child: TextFormField(
+                controller: _nameController,
+                validator: (value) {
+                  if (value?.isEmpty ?? false) {
+                    return 'Lütfen geçerli bir isim girin!';
+                  } else {
+                    return null;
+                  }
+                },
+                keyboardType: TextInputType.emailAddress,
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.person_2_outlined),
+                  hintText: 'İsim',
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                ),
+              ),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: SizedBox(
@@ -84,7 +114,29 @@ class LoginView extends StatelessWidget {
               ),
             ),
           ),
-          TextButton(onPressed: () {}, child: Text('Şifremi Unuttum')),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.75,
+              child: TextFormField(
+                controller: _passwordCtrlController,
+                validator: (value) {
+                  if (value != _passwordController.value.text) {
+                    return 'Şifreler uyuşmuyor!';
+                  } else {
+                    return null;
+                  }
+                },
+                obscureText: true,
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.lock_outlined),
+                  hintText: 'Şifre Kontrol',
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                ),
+              ),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: SizedBox(
@@ -95,7 +147,7 @@ class LoginView extends StatelessWidget {
                       _loginFormKey.currentState?.validate();
                     },
                     child: Text(
-                      'Giriş Yap',
+                      'Kayıt Ol',
                       style: Theme.of(context)
                           .textTheme
                           .headlineSmall
@@ -103,12 +155,6 @@ class LoginView extends StatelessWidget {
                               color: Colors.white, fontWeight: FontWeight.bold),
                     ))),
           ),
-          TextButton(
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => RegisterView()));
-              },
-              child: Text('Kayıt Ol')),
         ],
       ),
     );
