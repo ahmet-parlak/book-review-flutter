@@ -7,6 +7,9 @@ class LoginView extends StatelessWidget {
   static final _loginFormKey = GlobalKey<FormState>();
   static TextEditingController _emailController = TextEditingController();
   static TextEditingController _passwordController = TextEditingController();
+
+  final String logoPath = 'assets/images/logos/BookReview-Icon.png';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,8 +19,7 @@ class LoginView extends StatelessWidget {
             children: [
               Container(
                   width: MediaQuery.of(context).size.width * 0.35,
-                  child:
-                      Image.asset('assets/images/logos/BookReview-Icon.png')),
+                  child: Image.asset(logoPath)),
               SizedBox(height: 24),
               Text('GİRİŞ YAP',
                   style: Theme.of(context).textTheme.headlineLarge?.copyWith(

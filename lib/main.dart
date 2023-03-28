@@ -1,5 +1,6 @@
 import 'package:book_review/config/primary_palette.dart';
-import 'package:book_review/views/login_view.dart';
+import 'package:book_review/config/secondary_palette.dart';
+import 'package:book_review/views/home_view.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -18,12 +19,19 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: PrimaryPalette.materialColor,
         primarySwatch: PrimaryPalette.materialColor,
+        colorScheme: Theme.of(context)
+            .colorScheme
+            .copyWith(secondary: SecondaryPalette.materialColor),
         appBarTheme: const AppBarTheme(elevation: 0, color: Colors.transparent),
         elevatedButtonTheme: const ElevatedButtonThemeData(
             style:
                 ButtonStyle(shape: MaterialStatePropertyAll(StadiumBorder()))),
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+            backgroundColor: PrimaryPalette.materialColor,
+            selectedItemColor: Colors.white,
+            unselectedItemColor: Colors.white38),
       ),
-      home: const LoginView(),
+      home: const HomeView(),
     );
   }
 }
