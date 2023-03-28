@@ -11,4 +11,11 @@ class User {
       required this.email,
       required this.photoUrl,
       required this.about});
+
+  User.fromData(data)
+      : email = data['email'].toString(),
+        about = data['about'].toString(),
+        name = data['name'].toString(),
+        id = data['id'].toString(),
+        photoUrl = data['profile_photo_url'].toString();
 }
