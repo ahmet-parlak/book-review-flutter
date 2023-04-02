@@ -1,14 +1,71 @@
 import 'package:book_review/views/register_view.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class LoginView extends StatelessWidget {
+import '../models/user_data.dart';
+import '../widgets/loading_indicator.dart';
+
+class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
   static final _loginFormKey = GlobalKey<FormState>();
   static TextEditingController _emailController = TextEditingController();
   static TextEditingController _passwordController = TextEditingController();
 
+  @override
+  State<LoginView> createState() => _LoginViewState();
+}
+
+class _LoginViewState extends State<LoginView> {
   final String logoPath = 'assets/images/logos/BookReview-Icon.png';
+
+  bool loginBtnIsActive = true;
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Giriş Yapılamadı'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text('E-posta ya da şifre yanlış!'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Tamam'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> loginOnPressed() async {
+    if (LoginView._loginFormKey.currentState?.validate() ?? false) {
+      setState(() {
+        loginBtnIsActive = false;
+      });
+
+      bool? isLogin = await Provider.of<UserData>(context, listen: false)
+          .loginUser(
+              email: LoginView._emailController.value.text,
+              password: LoginView._passwordController.value.text);
+
+      if (isLogin == false) {
+        _showMyDialog();
+        setState(() {
+          loginBtnIsActive = true;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +83,7 @@ class LoginView extends StatelessWidget {
                       color: Theme.of(context).primaryColor,
                       fontWeight: FontWeight.bold)),
               SizedBox(height: 24),
-              buildLoginForm(context, _loginFormKey)
+              buildLoginForm(context, LoginView._loginFormKey)
             ],
           ),
         ),
@@ -45,7 +102,7 @@ class LoginView extends StatelessWidget {
             child: SizedBox(
               width: MediaQuery.of(context).size.width * 0.75,
               child: TextFormField(
-                controller: _emailController,
+                controller: LoginView._emailController,
                 validator: (value) {
                   if (!EmailValidator.validate(value!)) {
                     return 'Lütfen geçerli bir e-posta adresi girin!';
@@ -68,7 +125,7 @@ class LoginView extends StatelessWidget {
             child: SizedBox(
               width: MediaQuery.of(context).size.width * 0.75,
               child: TextFormField(
-                controller: _passwordController,
+                controller: LoginView._passwordController,
                 validator: (value) {
                   if (value!.isEmpty) {
                     return 'Lütfen şifrenizi girin!';
@@ -90,20 +147,23 @@ class LoginView extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: SizedBox(
-                height: MediaQuery.of(context).size.width * 0.14,
-                width: MediaQuery.of(context).size.width * 0.70,
-                child: ElevatedButton(
-                    onPressed: () {
-                      _loginFormKey.currentState?.validate();
-                    },
-                    child: Text(
-                      'Giriş Yap',
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineSmall
-                          ?.copyWith(
-                              color: Colors.white, fontWeight: FontWeight.bold),
-                    ))),
+              height: MediaQuery.of(context).size.width * 0.14,
+              width: MediaQuery.of(context).size.width * 0.70,
+              child: ElevatedButton(
+                onPressed: loginBtnIsActive ? loginOnPressed : null,
+                child: loginBtnIsActive
+                    ? Text(
+                        'Giriş Yap',
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineSmall
+                            ?.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                      )
+                    : LoadingIndicatorWidget(),
+              ),
+            ),
           ),
           TextButton(
               onPressed: () {
