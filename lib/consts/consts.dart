@@ -1,10 +1,16 @@
 //Network
 const String localhostDomain = 'localhost:8000';
-const String baseUrlDomain = '10.0.2.2:8000';
-const String apiBaseUrl = 'http://10.0.2.2:8000/api';
+//for device: 192.168.0.10:8000  -- for emulator: 10.0.2.2:8000
+const String baseUrlDomain = '192.168.0.10:8000';
+const String apiBaseUrl = 'http://192.168.0.10:8000/api';
 const String apiAuth = '/auth'; //get token
 const String apiRegister = '/register';
 const String apiAuthUser = '/auth/user'; //get user credentials with token
+const String apiUpdateUserProfile = '/auth/user';
+const String apiResetUserPassword = '/auth/user/password';
 
 //RegisterForm
 const int minPasswordLength = 6;
+
+//ProfilePhotoFileSize
+const int maxPhotoFileSize = 1048576; //1024 KB

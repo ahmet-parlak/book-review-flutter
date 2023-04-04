@@ -1,6 +1,8 @@
 import 'package:book_review/responseMixin.dart';
 import 'package:book_review/services/network_manager.dart';
 
+import '../consts/consts.dart' as constants;
+
 class Register with ResponseMixin {
   final String email;
   final String name;
@@ -20,8 +22,8 @@ class Register with ResponseMixin {
       'password': password,
       'password_confirmation': passwordConfirmation,
     };
-    final response =
-        await NetworkManager.instance.service.post('/register', data: data);
+    final response = await NetworkManager.instance.service
+        .post(constants.apiRegister, data: data);
     if (response.statusCode == 200) {
       if (response.data['success'] == true ||
           response.data['status'] == 'success') {

@@ -17,7 +17,10 @@ class UserData with ChangeNotifier {
 
   Future<void> getUser() async {
     _token = await SecureStorage.instance.readToken();
-    if (_token == null) _user = null;
+    if (_token == null) {
+      _user = null;
+      return;
+    }
     NetworkManager.instance.addBaseHeaderToToken('Bearer ${_token ?? ''}');
     try {
       final response =

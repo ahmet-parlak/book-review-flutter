@@ -87,122 +87,127 @@ class _RegisterFormWidgetState extends State<RegisterFormWidget> {
   Widget build(BuildContext context) {
     return Form(
       key: _loginFormKey,
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width * 0.75,
-              child: TextFormField(
-                controller: _nameController,
-                validator: (value) {
-                  if (value?.isEmpty ?? false) {
-                    return 'Lütfen geçerli bir isim girin!';
-                  } else {
-                    return null;
-                  }
-                },
-                keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.person_2_outlined),
-                  hintText: 'İsim',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width * 0.75,
+                child: TextFormField(
+                  controller: _nameController,
+                  validator: (value) {
+                    if (value?.isEmpty ?? false) {
+                      return 'Lütfen geçerli bir isim girin!';
+                    } else {
+                      return null;
+                    }
+                  },
+                  keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.person_2_outlined),
+                    hintText: 'İsim',
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                  ),
                 ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width * 0.75,
-              child: TextFormField(
-                controller: _emailController,
-                validator: (value) {
-                  if (!EmailValidator.validate(value!)) {
-                    return 'Lütfen geçerli bir e-posta adresi girin!';
-                  } else {
-                    return null;
-                  }
-                },
-                keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.alternate_email_outlined),
-                  hintText: 'E-posta',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width * 0.75,
+                child: TextFormField(
+                  controller: _emailController,
+                  validator: (value) {
+                    if (!EmailValidator.validate(value!)) {
+                      return 'Lütfen geçerli bir e-posta adresi girin!';
+                    } else {
+                      return null;
+                    }
+                  },
+                  textInputAction: TextInputAction.next,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.alternate_email_outlined),
+                    hintText: 'E-posta',
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                  ),
                 ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width * 0.75,
-              child: TextFormField(
-                controller: _passwordController,
-                validator: (value) {
-                  if (value!.isEmpty ||
-                      value.length < constants.minPasswordLength) {
-                    return 'Lütfen en az ${constants.minPasswordLength} karakter uzunluğunda bir şifre girin!';
-                  } else {
-                    return null;
-                  }
-                },
-                obscureText: true,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.lock_outlined),
-                  hintText: 'Şifre',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width * 0.75,
+                child: TextFormField(
+                  controller: _passwordController,
+                  validator: (value) {
+                    if (value!.isEmpty ||
+                        value.length < constants.minPasswordLength) {
+                      return 'Lütfen en az ${constants.minPasswordLength} karakter uzunluğunda bir şifre girin!';
+                    } else {
+                      return null;
+                    }
+                  },
+                  textInputAction: TextInputAction.next,
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.lock_outlined),
+                    hintText: 'Şifre',
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                  ),
                 ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width * 0.75,
-              child: TextFormField(
-                controller: _passwordConfirmController,
-                validator: (value) {
-                  if (value != _passwordController.value.text) {
-                    return 'Şifreler uyuşmuyor!';
-                  } else {
-                    return null;
-                  }
-                },
-                obscureText: true,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.lock_outlined),
-                  hintText: 'Şifre Kontrol',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width * 0.75,
+                child: TextFormField(
+                  controller: _passwordConfirmController,
+                  validator: (value) {
+                    if (value != _passwordController.value.text) {
+                      return 'Şifreler uyuşmuyor!';
+                    } else {
+                      return null;
+                    }
+                  },
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.lock_outlined),
+                    hintText: 'Şifre Kontrol',
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                  ),
                 ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SizedBox(
-                height: MediaQuery.of(context).size.width * 0.14,
-                width: MediaQuery.of(context).size.width * 0.70,
-                child: ElevatedButton(
-                    onPressed:
-                        registerBtnIsActive ? registerBtnOnPressed : null,
-                    child: registerBtnIsActive
-                        ? Text(
-                            'Kayıt Ol',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineSmall
-                                ?.copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
-                          )
-                        : const LoadingIndicatorWidget())),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.all(50.0),
+              child: SizedBox(
+                  height: MediaQuery.of(context).size.width * 0.14,
+                  width: MediaQuery.of(context).size.width * 0.70,
+                  child: ElevatedButton(
+                      onPressed:
+                          registerBtnIsActive ? registerBtnOnPressed : null,
+                      child: registerBtnIsActive
+                          ? Text(
+                              'Kayıt Ol',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineSmall
+                                  ?.copyWith(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                            )
+                          : const LoadingIndicatorWidget())),
+            ),
+          ],
+        ),
       ),
     );
   }

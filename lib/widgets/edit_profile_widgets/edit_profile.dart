@@ -5,10 +5,12 @@ class EditProfileWidget extends StatelessWidget {
     super.key,
     required this.title,
     required this.icon,
+    this.onTap,
   });
 
   final String title;
   final Icon icon;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +21,7 @@ class EditProfileWidget extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: ListTile(
+          onTap: onTap,
           leading: icon,
           title: Text(title,
               style: Theme.of(context)

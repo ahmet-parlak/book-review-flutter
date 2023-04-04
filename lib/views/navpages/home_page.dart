@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../widgets/book_card.dart';
-import '../../widgets/menu_card.dart';
-
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
@@ -19,7 +16,8 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Placeholder();
+    /*return Column(
       children: [
         Container(
           height: MediaQuery.of(context).size.height * 0.65,
@@ -61,6 +59,6 @@ class HomePage extends StatelessWidget {
               ],
             )),
       ],
-    );
+    );*/
   }
 }

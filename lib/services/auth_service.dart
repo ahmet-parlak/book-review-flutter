@@ -31,6 +31,7 @@ class Auth {
         token = response.data;
       }
     } catch (e) {
+      rethrow;
       return false;
     }
 
