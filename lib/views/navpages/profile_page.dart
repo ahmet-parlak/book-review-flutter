@@ -244,17 +244,3 @@ class _ProfilePageState extends State<ProfilePage> with ShowCustomDialogMixin {
     );
   }
 }
-
-/*
-* Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: Container(
-                            padding: const EdgeInsets.all(2.0),
-                            decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.secondary,
-                                shape: BoxShape.circle),
-                            child: const Icon(
-                              Icons.edit,
-                              size: 18,
-                            )))*/

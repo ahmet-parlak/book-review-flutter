@@ -5,13 +5,17 @@ import 'package:book_review/views/login_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'models/search_data.dart';
 import 'models/user_data.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await UserData().getUser();
   runApp(MultiProvider(
-    providers: [ChangeNotifierProvider<UserData>(create: (_) => UserData())],
+    providers: [
+      ChangeNotifierProvider<UserData>(create: (_) => UserData()),
+      ChangeNotifierProvider<SearchData>(create: (_) => SearchData())
+    ],
     child: const MyApp(),
   ));
 }

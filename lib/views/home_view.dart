@@ -1,3 +1,4 @@
+import 'package:book_review/widgets/search_widget.dart';
 import 'package:flutter/material.dart';
 
 import 'navpages/home_page.dart';
@@ -20,10 +21,18 @@ class _HomeViewState extends State<HomeView> {
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
-        title: Image.asset(logoPath, width: 260),
+        title: Image.asset(logoPath, width: 240),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              showModalBottomSheet(
+                  isScrollControlled: true,
+                  shape: const RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(20))),
+                  context: context,
+                  builder: (context) => const SearchWidget());
+            },
             icon: Icon(
               Icons.search,
               color: Theme.of(context).primaryColor,
@@ -52,8 +61,3 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 }
-
-/*
-*
-*
-* */

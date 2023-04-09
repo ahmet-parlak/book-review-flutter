@@ -54,10 +54,10 @@ class _EditEmailFormState extends State<EditEmailForm>
         });
         FocusScope.of(context).unfocus();
         final response = await EditProfile(
-                email:
-                    Provider.of<UserData>(context, listen: false).user?.email ??
+                name:
+                    Provider.of<UserData>(context, listen: false).user?.name ??
                         '',
-                name: emailTextController.value.text)
+                email: emailTextController.value.text)
             .update();
         if (response['success']) {
           turnBack(true);

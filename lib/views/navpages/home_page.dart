@@ -1,4 +1,10 @@
+import 'package:book_review/models/publisher_model.dart';
 import 'package:flutter/material.dart';
+
+import '../../models/author_model.dart';
+import '../../models/book_model.dart';
+import '../../widgets/book_card.dart';
+import '../../widgets/menu_card.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -16,39 +22,27 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
-    /*return Column(
+    final book = Book(
+        photo: imageUrl,
+        title: '1984',
+        author: Author(name: 'George Orwell'),
+        publisher: Publisher(name: 'Can Yayınlar'),
+        rating: 4,
+        reviewCount: 14);
+    //return const Placeholder();
+    return ListView(
       children: [
-        Container(
+        SizedBox(
           height: MediaQuery.of(context).size.height * 0.65,
           child: ListView(children: [
-            BookCardWidget(
-                imageUrl: imageUrl,
-                title: '1984',
-                author: 'George Orwell',
-                publisher: 'Can Yayınları',
-                rating: '4'),
-            BookCardWidget(
-                imageUrl: imageUrl,
-                title: '1984',
-                author: 'George Orwell',
-                publisher: 'Can Yayınları',
-                rating: '4'),
-            BookCardWidget(
-                imageUrl: imageUrl,
-                title: '1984',
-                author: 'George Orwell',
-                publisher: 'Can Yayınları',
-                rating: '4'),
-            BookCardWidget(
-                imageUrl: imageUrl,
-                title: '1984',
-                author: 'George Orwell',
-                publisher: 'Can Yayınları',
-                rating: '4'),
+            BookCardWidget(book: book),
+            BookCardWidget(book: book),
+            BookCardWidget(book: book),
+            BookCardWidget(book: book),
+            BookCardWidget(book: book),
           ]),
         ),
-        Container(
+        SizedBox(
             height: MediaQuery.of(context).size.height * 0.15,
             child: ListView(
               scrollDirection: Axis.horizontal,
@@ -59,6 +53,6 @@ class HomePage extends StatelessWidget {
               ],
             )),
       ],
-    );*/
+    );
   }
 }
