@@ -1,3 +1,4 @@
+import 'package:book_review/consts/consts.dart' as constants;
 import 'package:book_review/models/publisher_model.dart';
 
 import 'author_model.dart';
@@ -9,7 +10,7 @@ class Book {
   final String? originalTitle;
   final Author? author;
   final String? translator;
-  final String? publisherId;
+  final int? publisherId;
   final Publisher? publisher;
   final String? publicationYear;
   final String? pages;
@@ -18,6 +19,7 @@ class Book {
   final String? language;
   final int? reviewCount;
   final int? rating;
+  final List? categories;
 
   Book(
       {this.id,
@@ -34,22 +36,26 @@ class Book {
       this.photo,
       this.language,
       this.reviewCount,
-      this.rating});
+      this.rating,
+      this.categories});
 
   Book.fromData(data)
       : id = data['id'].toInt(),
-        isbn = data['isbn'].toString(),
-        title = data['title'].toString(),
+        isbn = data['isbn'],
+        title = data['title'],
         author = Author.fromData(data['author']),
-        originalTitle = data['original_title'].toString(),
-        translator = data['translator'].toString(),
-        publisherId = data['publisher_id'].toString(),
+        originalTitle = data['original_title'],
+        translator = data['translator'],
+        publisherId = data['publisher_id'],
         publisher = Publisher.fromData(data['publisher']),
-        publicationYear = data['publication_year'].toString(),
-        pages = data['pages'].toString(),
-        description = data['description'].toString(),
-        photo = data['book_photo'].toString(),
-        language = data['language'].toString(),
+        publicationYear = data['publication_year'],
+        pages = data['pages'],
+        description = data['description'],
+        photo = data['book_photo']
+            .toString()
+            .replaceAll(constants.localhostDomain, constants.baseUrlDomain),
+        language = data['language'],
         reviewCount = data['review_count'].toInt(),
+        categories = data['categories'],
         rating = data['rating'].toInt();
 }

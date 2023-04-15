@@ -53,7 +53,8 @@ class _SearchWidgetState extends State<SearchWidget>
         FocusScope.of(context).unfocus();
         /*Search Service Proc*/
         final response =
-            await Search(query: searchTextController.value.text).withQuery();
+            await Search(query: searchTextController.value.text.trim())
+                .withQuery();
 
         if (response['success']) {
           List books = response['data']['data'];
@@ -90,7 +91,7 @@ class _SearchWidgetState extends State<SearchWidget>
                       textInputAction: TextInputAction.done,
                       onEditingComplete: submitForm,
                       validator: (value) {
-                        if ((value?.length ?? 0) <
+                        if ((value?.trim().length ?? 0) <
                             constants.minSearchCharLength) {
                           return 'Lütfen en az ${constants.minSearchCharLength} karakter ile arama yapın';
                         } else {

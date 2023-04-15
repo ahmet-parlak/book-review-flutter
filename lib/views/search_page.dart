@@ -69,24 +69,6 @@ class _SearchPageState extends State<SearchPage> {
             child: BackButtonWidget(),
           )
         ],
-        /*actions: [
-            IconButton(
-              onPressed: () {
-                showModalBottomSheet(
-                    isScrollControlled: true,
-                    shape: const RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.vertical(top: Radius.circular(20))),
-                    context: context,
-                    builder: (context) => const SearchWidget());
-              },
-              icon: Icon(
-                Icons.search,
-                color: Theme.of(context).primaryColor,
-                size: 30,
-              ),
-            )
-          ]*/
       ),
       body: books.isEmpty
           ? const Center(child: Text('Kitap Bulunamadı'))

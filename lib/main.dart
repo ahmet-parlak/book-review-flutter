@@ -30,20 +30,30 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'BookReview',
       theme: ThemeData(
-        primaryColor: PrimaryPalette.materialColor,
-        primarySwatch: PrimaryPalette.materialColor,
-        colorScheme: Theme.of(context).colorScheme.copyWith(
-            primary: PrimaryPalette.materialColor,
-            secondary: SecondaryPalette.materialColor),
-        appBarTheme: const AppBarTheme(elevation: 0, color: Colors.transparent),
-        elevatedButtonTheme: const ElevatedButtonThemeData(
-            style:
-                ButtonStyle(shape: MaterialStatePropertyAll(StadiumBorder()))),
-        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-            backgroundColor: PrimaryPalette.materialColor,
-            selectedItemColor: Colors.white,
-            unselectedItemColor: Colors.white38),
-      ),
+          primaryColor: PrimaryPalette.materialColor,
+          primarySwatch: PrimaryPalette.materialColor,
+          colorScheme: Theme.of(context).colorScheme.copyWith(
+              primary: PrimaryPalette.materialColor,
+              secondary: SecondaryPalette.materialColor),
+          appBarTheme:
+              const AppBarTheme(elevation: 0, color: Colors.transparent),
+          elevatedButtonTheme: const ElevatedButtonThemeData(
+              style: ButtonStyle(
+                  shape: MaterialStatePropertyAll(StadiumBorder()))),
+          bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+              backgroundColor: PrimaryPalette.materialColor,
+              selectedItemColor: Colors.white,
+              unselectedItemColor: Colors.white38),
+          textTheme: const TextTheme(
+            headlineMedium: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: PrimaryPalette.materialColor),
+            headlineSmall: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: PrimaryPalette.materialColor),
+          )),
       home: Provider.of<UserData>(context).user == null
           ? const LoginView()
           : const HomeView(),

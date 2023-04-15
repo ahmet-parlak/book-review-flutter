@@ -26,7 +26,7 @@ class HomePage extends StatelessWidget {
         photo: imageUrl,
         title: '1984',
         author: Author(name: 'George Orwell'),
-        publisher: Publisher(name: 'Can Yayınlar'),
+        publisher: Publisher(name: 'Can Yayınları'),
         rating: 4,
         reviewCount: 14);
     //return const Placeholder();

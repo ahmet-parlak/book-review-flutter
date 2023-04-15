@@ -9,6 +9,7 @@ const String apiAuthUser = '/auth/user'; //get user credentials with token
 const String apiUpdateUserProfile = '/auth/user';
 const String apiResetUserPassword = '/auth/user/password'; //[put]
 const String apiSearch = '/search'; //[get]
+const String apiGetBook = '/book';
 
 //RegisterForm
 const int minPasswordLength = 6;
@@ -24,3 +25,10 @@ const String searchTextHint = 'Kitap, Yazar, ISBN, Yayınevi,...';
 const String logoBanner = 'assets/images/logos/BookReview-Banner.png';
 const String bookCoverNotAvailable =
     'assets/images/book_cover_not_available.jpg';
+
+//Language
+const Map language = {
+  "tr": "Türkçe",
+  "en": "İngilizce",
+  "es": "İspanyolca",
+};

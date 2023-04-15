@@ -1,3 +1,5 @@
+import 'package:book_review/consts/consts.dart' as constants;
+
 class User {
   final String? id;
   final String? name;
@@ -17,5 +19,7 @@ class User {
         about = data['about'].toString(),
         name = data['name'].toString(),
         id = data['id'].toString(),
-        photoUrl = data['profile_photo_url'].toString();
+        photoUrl = data['profile_photo_url']
+            .toString()
+            .replaceAll(constants.localhostDomain, constants.baseUrlDomain);
 }
