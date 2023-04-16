@@ -1,4 +1,8 @@
 import 'package:book_review/consts/consts.dart' as constants;
+import 'package:book_review/models/create_review.dart';
+import 'package:book_review/services/book_service.dart';
+import 'package:book_review/widgets/dialogs/custom_alert_dialog.dart';
+import 'package:book_review/widgets/review_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
@@ -16,6 +20,13 @@ class BookDetailCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void reviewSuccessDialog() {
+      showDialog(
+          context: context,
+          builder: (context) =>
+              const CustomAlertDialog(message: 'Değerlendirmeniz alındı'));
+    }
+
     return Card(
       elevation: 2,
       child: Column(
@@ -48,7 +59,7 @@ class BookDetailCardWidget extends StatelessWidget {
                             initialRating: book.rating?.toDouble() ?? 0,
                             minRating: 0,
                             direction: Axis.horizontal,
-                            allowHalfRating: false,
+                            allowHalfRating: true,
                             ignoreGestures: true,
                             itemCount: 5,
                             itemSize: 20,
@@ -141,7 +152,7 @@ class BookDetailCardWidget extends StatelessWidget {
                       ),
                       Row(children: [
                         Expanded(
-                          flex: 2,
+                          flex: 3,
                           child: DropdownButton(
                             isExpanded: true,
                             icon: Padding(
@@ -152,17 +163,17 @@ class BookDetailCardWidget extends StatelessWidget {
                             ),
                             items: const [
                               DropdownMenuItem(
-                                  child: Text('Kitabı Listeye Ekle'),
-                                  value: null),
+                                  value: null,
+                                  child: Text('Kitabı Listeye Ekle')),
                               DropdownMenuItem(
-                                  child: Text('Okundu'), value: 'read'),
+                                  value: 'read', child: Text('Okundu')),
                               DropdownMenuItem(
-                                  child: Text('Okunuyor'), value: 'reading'),
+                                  value: 'reading', child: Text('Okunuyor')),
                               DropdownMenuItem(
-                                  child: Text('Okunacak'), value: 'to_read'),
+                                  value: 'to_read', child: Text('Okunacak')),
                               DropdownMenuItem(
-                                  child: Text('Liste Oluştur'),
-                                  value: 'new_list'),
+                                  value: 'new_list',
+                                  child: Text('Liste Oluştur')),
                             ],
                             onChanged: (value) {},
                           ),
@@ -183,19 +194,51 @@ class BookDetailCardWidget extends StatelessWidget {
                         )
                       ]),
                       const SizedBox(height: 10),
-                      ElevatedButton(
-                          onPressed: () {},
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Text(
-                                'Kitabı Değerlendir',
-                                textAlign: TextAlign.center,
-                              ),
-                              SizedBox(width: 10),
-                              Icon(Icons.rate_review_rounded, size: 20)
-                            ],
-                          ))
+                      book.userReview == null
+                          ? ElevatedButton(
+                              onPressed: () async {
+                                CreateReview? review =
+                                    await showModalBottomSheet(
+                                        isScrollControlled: true,
+                                        shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.vertical(
+                                                top: Radius.circular(20))),
+                                        context: context,
+                                        builder: (context) =>
+                                            const ReviewFormWidget());
+                                if (review != null) {
+                                  final response = await BookService(book.id)
+                                      .reviewBook(review);
+
+                                  if (response['success'] == true) {
+                                    final data = response['data'];
+
+                                    if (data['success'] == true) {
+                                      reviewSuccessDialog();
+                                    }
+                                  }
+                                }
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Text('Kitabı Değerlendir',
+                                      textAlign: TextAlign.center),
+                                  SizedBox(width: 10),
+                                  Icon(Icons.rate_review_rounded, size: 20)
+                                ],
+                              ))
+                          : ElevatedButton(
+                              onPressed: () async {},
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Text('Değerlendirmenizi Düzenleyin',
+                                      textAlign: TextAlign.center),
+                                  SizedBox(width: 10),
+                                  Icon(Icons.rate_review_rounded, size: 20)
+                                ],
+                              ))
                     ],
                   ),
                 ),

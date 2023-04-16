@@ -1,5 +1,6 @@
 import 'package:book_review/consts/consts.dart' as constants;
 import 'package:book_review/models/publisher_model.dart';
+import 'package:book_review/models/review_model.dart';
 
 import 'author_model.dart';
 
@@ -18,8 +19,9 @@ class Book {
   final String? photo;
   final String? language;
   final int? reviewCount;
-  final int? rating;
+  final double? rating;
   final List? categories;
+  final Review? userReview;
 
   Book(
       {this.id,
@@ -37,7 +39,8 @@ class Book {
       this.language,
       this.reviewCount,
       this.rating,
-      this.categories});
+      this.categories,
+      this.userReview});
 
   Book.fromData(data)
       : id = data['id'].toInt(),
@@ -57,5 +60,8 @@ class Book {
         language = data['language'],
         reviewCount = data['review_count'].toInt(),
         categories = data['categories'],
-        rating = data['rating'].toInt();
+        rating = data['rating'].toDouble(),
+        userReview = data['user_review'] != null
+            ? Review.fromData(data['user_review'])
+            : null;
 }

@@ -74,7 +74,7 @@ class BookCardWidget extends StatelessWidget {
                           initialRating: book.rating?.toDouble() ?? 0,
                           minRating: 0,
                           direction: Axis.horizontal,
-                          allowHalfRating: false,
+                          allowHalfRating: true,
                           ignoreGestures: true,
                           itemCount: 5,
                           itemSize: 20,
