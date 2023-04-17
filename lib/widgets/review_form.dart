@@ -2,20 +2,36 @@ import 'package:book_review/models/create_review.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
-class ReviewFormWidget extends StatefulWidget {
-  const ReviewFormWidget({Key? key}) : super(key: key);
+import '../models/review_model.dart';
 
+class ReviewFormWidget extends StatefulWidget {
+  const ReviewFormWidget({Key? key, this.currentReview}) : super(key: key);
+  final Review? currentReview;
   @override
   State<ReviewFormWidget> createState() => _ReviewFormWidgetState();
 }
 
 class _ReviewFormWidgetState extends State<ReviewFormWidget> {
-  int reviewRating = 0;
+  late int reviewRating;
   bool ratingError = false;
+  String ratingErrorMessage = '';
+  bool isEditing = false;
+  late final TextEditingController reviewTextController;
+  late final String formSubmitButtonText;
+  @override
+  void initState() {
+    if (widget.currentReview != null) isEditing = true;
+    reviewRating = widget.currentReview?.rating ?? 0;
+    formSubmitButtonText =
+        widget.currentReview != null ? 'Düzenlemeyi Kaydet' : 'Değerlendir';
+    reviewTextController =
+        TextEditingController(text: widget.currentReview?.review);
+    super.initState();
+  }
 
-  final TextEditingController reviewTextController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final double initialRating = widget.currentReview?.rating?.toDouble() ?? 0;
     return GestureDetector(
       onTap: () {
         FocusManager.instance.primaryFocus?.unfocus();
@@ -29,7 +45,7 @@ class _ReviewFormWidgetState extends State<ReviewFormWidget> {
             mainAxisSize: MainAxisSize.min,
             children: [
               RatingBar.builder(
-                initialRating: 0,
+                initialRating: initialRating,
                 minRating: 1,
                 direction: Axis.horizontal,
                 allowHalfRating: false,
@@ -62,29 +78,48 @@ class _ReviewFormWidgetState extends State<ReviewFormWidget> {
                 ),
               ),
               if (ratingError)
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10.0),
-                  child: Text(
-                      'Değerlendirmede bulunmak için kitaba puan verin!',
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  child: Text(ratingErrorMessage,
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.red),
                       overflow: TextOverflow.clip),
                 ),
-              ElevatedButton(
-                  onPressed: () {
-                    if (reviewRating == 0) {
-                      setState(() {
-                        ratingError = true;
-                      });
-                    } else {
-                      Navigator.pop(
-                          context,
-                          CreateReview(
+              isEditing
+                  ? ElevatedButton(
+                      onPressed: () {
+                        if (reviewRating == widget.currentReview!.rating &&
+                            reviewTextController.value.text.trim() ==
+                                (widget.currentReview!.review ?? '')) {
+                          setState(() {
+                            ratingErrorMessage =
+                                'Değerlendirmenizde bir değişiklik yapmadınız!';
+                            ratingError = true;
+                          });
+                        } else {
+                          final review = CreateReview(
                               rating: reviewRating,
-                              review: reviewTextController.value.text.trim()));
-                    }
-                  },
-                  child: const Text('Değerlendir'))
+                              review: reviewTextController.value.text.trim());
+                          Navigator.pop(context, review);
+                        }
+                      },
+                      child: Text(formSubmitButtonText))
+                  : ElevatedButton(
+                      onPressed: () {
+                        if (reviewRating == 0) {
+                          setState(() {
+                            ratingErrorMessage =
+                                'Değerlendirmek yapmak için kitaba puan verin!';
+                            ratingError = true;
+                          });
+                        } else {
+                          final review = CreateReview(
+                              rating: reviewRating,
+                              review: reviewTextController.value.text.trim());
+                          Navigator.pop(context, review);
+                        }
+                      },
+                      child: Text(formSubmitButtonText))
             ],
           ),
         ),

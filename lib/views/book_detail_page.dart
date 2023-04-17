@@ -1,45 +1,58 @@
 import 'package:book_review/consts/consts.dart' as constants;
-import 'package:book_review/models/review_model.dart';
 import 'package:book_review/services/book_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../models/book_data.dart';
 import '../models/book_model.dart';
 import '../widgets/back_button.dart';
 import '../widgets/book_detail_card.dart';
-import '../widgets/review_card_widget.dart';
 
-class BookDetailPage extends StatefulWidget {
-  const BookDetailPage({Key? key, required this.book}) : super(key: key);
-  final Book book;
-
+class BookDetailPage extends StatelessWidget {
+  BookDetailPage({Key? key, required this.book}) : super(key: key);
+  Book book;
   @override
-  State<BookDetailPage> createState() => _BookDetailPageState();
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<BookData>(
+      create: (context) => BookData(book),
+      child: const BookDetailPageScaffold(),
+    );
+  }
 }
 
-class _BookDetailPageState extends State<BookDetailPage> {
-  final List<ReviewCard> _reviews = [];
+class BookDetailPageScaffold extends StatefulWidget {
+  const BookDetailPageScaffold({
+    super.key,
+  });
+
+  @override
+  State<BookDetailPageScaffold> createState() => _BookDetailPageScaffoldState();
+}
+
+class _BookDetailPageScaffoldState extends State<BookDetailPageScaffold> {
+  void setBook(Book book) {
+    Provider.of<BookData>(context, listen: false).changeBook(book);
+  }
+
+  void setReviews(List reviews) {
+    Provider.of<BookData>(context, listen: false).loadReviews(reviews);
+  }
+
   void getBook() async {
-    final response = await BookService(widget.book.id ?? 0).getBook();
+    final response =
+        await BookService(context.read<BookData>().book.id ?? 0).getBook();
 
     if (response['success'] == true) {
+      setBook(Book.fromData(response['data']['book']));
       final List reviews = response['data']['book']['reviews'];
-      reviews.forEach((review) {
-        _reviews.add(ReviewCard(review: Review.fromData(review)));
-      });
+      setReviews(reviews);
     }
-    setState(() {});
   }
 
   @override
   void initState() {
     super.initState();
     getBook();
-  }
-
-  @override
-  void dispose() {
-    _reviews.clear();
-    super.dispose();
   }
 
   @override
@@ -56,8 +69,8 @@ class _BookDetailPageState extends State<BookDetailPage> {
           )
         ],
       ),
-      body: ListView(children: [
-        BookDetailCardWidget(book: widget.book),
+      body: ListView(physics: const BouncingScrollPhysics(), children: [
+        const BookDetailCardWidget(/*book: context.watch<BookData>().book*/),
         const SizedBox(height: 16),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -68,7 +81,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
                     borderRadius: BorderRadius.circular(10)),
                 color: Theme.of(context).primaryColor),
             child: Text(
-              'Değerlendirmeler (${widget.book.reviewCount})',
+              'Değerlendirmeler (${context.watch<BookData>().book.reviewCount})',
               style: Theme.of(context)
                   .textTheme
                   .headlineMedium
@@ -79,7 +92,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
         ),
         const SizedBox(height: 6.0),
         Column(
-          children: _reviews,
+          children: Provider.of<BookData>(context).reviews,
         ),
       ]),
     );

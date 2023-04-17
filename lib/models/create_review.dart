@@ -2,5 +2,5 @@ class CreateReview {
   String? review;
   int rating;
 
-  CreateReview({required this.rating, review});
+  CreateReview({required this.rating, this.review});
 }

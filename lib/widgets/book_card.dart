@@ -7,12 +7,10 @@ import '../models/book_model.dart';
 import '../views/book_detail_page.dart';
 
 class BookCardWidget extends StatelessWidget {
-  const BookCardWidget({
-    super.key,
-    required this.book,
-  });
+  const BookCardWidget({super.key, required this.book, this.index});
 
   final Book book;
+  final int? index;
 
   @override
   Widget build(BuildContext context) {

@@ -1,30 +1,33 @@
 import 'package:book_review/consts/consts.dart' as constants;
+import 'package:book_review/models/book_data.dart';
+import 'package:book_review/models/book_model.dart';
 import 'package:book_review/models/create_review.dart';
 import 'package:book_review/services/book_service.dart';
 import 'package:book_review/widgets/dialogs/custom_alert_dialog.dart';
 import 'package:book_review/widgets/review_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:provider/provider.dart';
 
-import '../models/book_model.dart';
 import 'book_report_dialog.dart';
 import 'loading_indicator.dart';
 
 class BookDetailCardWidget extends StatelessWidget {
-  const BookDetailCardWidget({
-    super.key,
-    required this.book,
-  });
+  const BookDetailCardWidget({super.key});
 
-  final Book book;
-
+  //final Book book;
   @override
   Widget build(BuildContext context) {
-    void reviewSuccessDialog() {
+    final book = context.watch<BookData>().book;
+    final List<String> categories = [];
+    final List? categoriesList = book.categories;
+    categoriesList?.forEach((category) {
+      categories.add(category['category']['category_name']);
+    });
+    void reviewSuccessDialog({required String message}) {
       showDialog(
           context: context,
-          builder: (context) =>
-              const CustomAlertDialog(message: 'Değerlendirmeniz alındı'));
+          builder: (context) => CustomAlertDialog(message: message));
     }
 
     return Card(
@@ -106,9 +109,9 @@ class BookDetailCardWidget extends StatelessWidget {
                             style: Theme.of(context).textTheme.headlineSmall),
                         Expanded(
                           child: Text(
-                              (book.categories?.isEmpty ?? true)
+                              (categories.isEmpty)
                                   ? '-'
-                                  : book.categories!.join(','),
+                                  : categories.join(", "),
                               overflow: TextOverflow.ellipsis,
                               style: Theme.of(context).textTheme.titleMedium),
                         )
@@ -206,6 +209,7 @@ class BookDetailCardWidget extends StatelessWidget {
                                         context: context,
                                         builder: (context) =>
                                             const ReviewFormWidget());
+
                                 if (review != null) {
                                   final response = await BookService(book.id)
                                       .reviewBook(review);
@@ -214,7 +218,14 @@ class BookDetailCardWidget extends StatelessWidget {
                                     final data = response['data'];
 
                                     if (data['success'] == true) {
-                                      reviewSuccessDialog();
+                                      context.read<BookData>().changeBook(
+                                          Book.fromData(data['book']));
+                                      context
+                                          .read<BookData>()
+                                          .loadReviews(data['book']['reviews']);
+                                      reviewSuccessDialog(
+                                          message: data['message'] ??
+                                              'Değerlendirmeniz alındı');
                                     }
                                   }
                                 }
@@ -229,7 +240,37 @@ class BookDetailCardWidget extends StatelessWidget {
                                 ],
                               ))
                           : ElevatedButton(
-                              onPressed: () async {},
+                              onPressed: () async {
+                                CreateReview? review =
+                                    await showModalBottomSheet(
+                                        isScrollControlled: true,
+                                        shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.vertical(
+                                                top: Radius.circular(20))),
+                                        context: context,
+                                        builder: (context) => ReviewFormWidget(
+                                            currentReview: book.userReview));
+
+                                if (review != null) {
+                                  final response = await BookService(book.id)
+                                      .editReview(review);
+
+                                  if (response['success'] == true) {
+                                    final data = response['data'];
+
+                                    if (data['success'] == true) {
+                                      context.read<BookData>().changeBook(
+                                          Book.fromData(data['book']));
+                                      context
+                                          .read<BookData>()
+                                          .loadReviews(data['book']['reviews']);
+                                      reviewSuccessDialog(
+                                          message: data['message'] ??
+                                              'Değerlendirmeniz güncellendi');
+                                    }
+                                  }
+                                }
+                              },
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: const [

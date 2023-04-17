@@ -6,8 +6,8 @@ import 'book_model.dart';
 
 class SearchData with ChangeNotifier {
   final List<Book> _books = [];
-  String? _nextPageUrl = null;
-  String? _prevPageUrl = null;
+  String? _nextPageUrl;
+  String? _prevPageUrl;
 
   UnmodifiableListView<Book> getBooks() => UnmodifiableListView(_books);
 
@@ -27,6 +27,11 @@ class SearchData with ChangeNotifier {
 
   void _addBook(Book book) {
     _books.add(book);
+  }
+
+  void changeBook({required Book book, required int index}) {
+    _books[index] = book;
+    notifyListeners();
   }
 
   void setNextPageUrl(String? url) {

@@ -77,4 +77,26 @@ class BookService with ResponseMixin {
       }
     }
   }
+
+  Future<Map> editReview(CreateReview review) async {
+    try {
+      Map data = {"book": id, "rating": review.rating, "review": review.review};
+
+      final response = await NetworkManager.instance.service
+          .put('${constants.apiGetBook}/$id/review', data: data);
+      return responseMap(success: true, data: response.data);
+    } on DioError catch (e) {
+      if (e.response != null) {
+        return responseMap(
+            success: false,
+            message: e.response!.data['message'],
+            data: e.response!.data['errors']);
+      } else {
+        return responseMap(
+            success: false,
+            message: 'Bir hata meydana geldi',
+            data: {'message': 'Bir hata meydana geldi'});
+      }
+    }
+  }
 }
