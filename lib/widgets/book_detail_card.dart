@@ -2,13 +2,16 @@ import 'package:book_review/consts/consts.dart' as constants;
 import 'package:book_review/models/book_data.dart';
 import 'package:book_review/models/book_model.dart';
 import 'package:book_review/models/create_review.dart';
+import 'package:book_review/models/user_data.dart';
 import 'package:book_review/services/book_service.dart';
 import 'package:book_review/widgets/dialogs/custom_alert_dialog.dart';
+import 'package:book_review/widgets/list_widgets/create_list_form.dart';
 import 'package:book_review/widgets/review_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 
+import '../models/book_list_model.dart';
 import 'book_report_dialog.dart';
 import 'loading_indicator.dart';
 
@@ -21,13 +24,27 @@ class BookDetailCardWidget extends StatelessWidget {
     final book = context.watch<BookData>().book;
     final List<String> categories = [];
     final List? categoriesList = book.categories;
+    final List userLists = context.watch<UserData>().bookLists;
+    final List<DropdownMenuItem> bookListDropdownItems = [];
+
+    for (var bookList in userLists) {
+      bookListDropdownItems.add(buildDropdownMenuItem(bookList));
+    }
     categoriesList?.forEach((category) {
       categories.add(category['category']['category_name']);
     });
-    void reviewSuccessDialog({required String message}) {
+
+    void showSuccessDialog({required String message}) {
       showDialog(
           context: context,
           builder: (context) => CustomAlertDialog(message: message));
+    }
+
+    void showErrorDialog({required String message}) {
+      showDialog(
+          context: context,
+          builder: (context) =>
+              CustomAlertDialog(message: message, title: 'Hata'));
     }
 
     return Card(
@@ -134,7 +151,7 @@ class BookDetailCardWidget extends StatelessWidget {
                         Text('Dil: ',
                             style: Theme.of(context).textTheme.headlineSmall),
                         Text(
-                            constants.language[book.language] ??
+                            constants.bookLanguage[book.language] ??
                                 (book.language ?? ''),
                             overflow: TextOverflow.ellipsis,
                             style: Theme.of(context).textTheme.titleMedium)
@@ -164,21 +181,64 @@ class BookDetailCardWidget extends StatelessWidget {
                                   size: 20,
                                   color: Theme.of(context).colorScheme.primary),
                             ),
-                            items: const [
-                              DropdownMenuItem(
-                                  value: null,
+                            items: [
+                              const DropdownMenuItem(
                                   child: Text('Kitabı Listeye Ekle')),
-                              DropdownMenuItem(
-                                  value: 'read', child: Text('Okundu')),
-                              DropdownMenuItem(
-                                  value: 'reading', child: Text('Okunuyor')),
-                              DropdownMenuItem(
-                                  value: 'to_read', child: Text('Okunacak')),
-                              DropdownMenuItem(
-                                  value: 'new_list',
+                              ...bookListDropdownItems,
+                              const DropdownMenuItem(
+                                  value: 'create',
                                   child: Text('Liste Oluştur')),
                             ],
-                            onChanged: (value) {},
+                            onChanged: (value) async {
+                              if (value != null) {
+                                if (value == 'create') {
+                                  String listName = await showModalBottomSheet(
+                                      isScrollControlled: true,
+                                      shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.vertical(
+                                              top: Radius.circular(20))),
+                                      context: context,
+                                      builder: (context) =>
+                                          const CreateListFormWidget());
+                                  if (listName.isNotEmpty) {
+                                    final response = await BookService(book.id)
+                                        .createList(listName: listName);
+
+                                    if (response['success'] == true) {
+                                      final data = response['data'];
+                                      if (data['state'] == 'success') {
+                                        showSuccessDialog(
+                                            message: data['message']);
+                                        if (data['newlist'] == 'true') {
+                                          Provider.of<UserData>(context,
+                                                  listen: false)
+                                              .addListFromData(data['list']);
+                                        }
+                                      }
+                                    } else {
+                                      showErrorDialog(
+                                          message: response['message'] ??
+                                              'Bir hata meydana geldi');
+                                    }
+                                  }
+                                } else {
+                                  final response = await BookService(book.id)
+                                      .addToList(listId: value);
+
+                                  if (response['success'] == true) {
+                                    final data = response['data'];
+                                    if (data['state'] == 'success') {
+                                      showSuccessDialog(
+                                          message: data['message']);
+                                    }
+                                  } else {
+                                    showErrorDialog(
+                                        message: response['message'] ??
+                                            'Bir hata meydana geldi');
+                                  }
+                                }
+                              }
+                            },
                           ),
                         ),
                         Expanded(
@@ -223,7 +283,7 @@ class BookDetailCardWidget extends StatelessWidget {
                                       context
                                           .read<BookData>()
                                           .loadReviews(data['book']['reviews']);
-                                      reviewSuccessDialog(
+                                      showSuccessDialog(
                                           message: data['message'] ??
                                               'Değerlendirmeniz alındı');
                                     }
@@ -264,7 +324,7 @@ class BookDetailCardWidget extends StatelessWidget {
                                       context
                                           .read<BookData>()
                                           .loadReviews(data['book']['reviews']);
-                                      reviewSuccessDialog(
+                                      showSuccessDialog(
                                           message: data['message'] ??
                                               'Değerlendirmeniz güncellendi');
                                     }
@@ -289,5 +349,11 @@ class BookDetailCardWidget extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  DropdownMenuItem buildDropdownMenuItem(BookList bookList) {
+    return DropdownMenuItem(
+        value: bookList.id,
+        child: Text(constants.bookListNames[bookList.name] ?? bookList.name));
   }
 }

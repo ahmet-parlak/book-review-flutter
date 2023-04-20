@@ -99,4 +99,34 @@ class BookService with ResponseMixin {
       }
     }
   }
+
+  Future<Map> addToList({required int listId}) async {
+    try {
+      Map data = {"book": id, "list": listId};
+      final response = await NetworkManager.instance.service
+          .post('${constants.apiListAddBook}', data: data);
+
+      return responseMap(success: true, data: response.data);
+    } on DioError catch (e) {
+      return responseMap(
+          success: false,
+          message: 'Bir hata meydana geldi',
+          data: {'message': 'Bir hata meydana geldi'});
+    }
+  }
+
+  Future<Map> createList({required String listName}) async {
+    try {
+      Map data = {"book": id, "list_name": listName};
+      final response = await NetworkManager.instance.service
+          .post(constants.apiCreateBookList, data: data);
+
+      return responseMap(success: true, data: response.data);
+    } on DioError catch (e) {
+      return responseMap(
+          success: false,
+          message: 'Bir hata meydana geldi',
+          data: {'message': 'Bir hata meydana geldi'});
+    }
+  }
 }

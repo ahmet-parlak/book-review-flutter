@@ -10,6 +10,11 @@ const String apiUpdateUserProfile = '/auth/user';
 const String apiResetUserPassword = '/auth/user/password'; //[put]
 const String apiSearch = '/search'; //[get]
 const String apiGetBook = '/book';
+const String apiCreateBookList = '/list'; //[post]
+const String apiDeleteBookList = '/list'; //[delete]
+const String apiUpdateBookList = '/list'; //[patch]
+const String apiListAddBook = '/list/add'; //[post]
+const String apiListRemoveBook = '/list/remove'; //[post]
 
 //RegisterForm
 const int minPasswordLength = 6;
@@ -27,8 +32,26 @@ const String bookCoverNotAvailable =
     'assets/images/book_cover_not_available.jpg';
 
 //Language
-const Map language = {
+const Map<String, String> bookLanguage = {
   "tr": "Türkçe",
   "en": "İngilizce",
+  "de": "Almanca",
   "es": "İspanyolca",
+  "fr": "Fransızca",
+  "it": "İtalyanca",
+  "fi": "Fince",
+  "hi": "Hintçe"
 };
+
+//BookLists
+const String defaultBookListStatus = 'public';
+const Map<String, String> bookListNames = {
+  "read": "Okundu",
+  "to read": "Okunacak",
+  "currently reading": "Şu anda okunuyor"
+};
+const Map<String, String> bookListsStatus = {
+  "public": "Herkese açık",
+  "private": "Özel"
+};
+const int minListNameLength = 3;
