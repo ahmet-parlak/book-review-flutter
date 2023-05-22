@@ -10,11 +10,16 @@ const String apiUpdateUserProfile = '/auth/user';
 const String apiResetUserPassword = '/auth/user/password'; //[put]
 const String apiSearch = '/search'; //[get]
 const String apiGetBook = '/book';
-const String apiCreateBookList = '/list'; //[post]
-const String apiDeleteBookList = '/list'; //[delete]
-const String apiUpdateBookList = '/list'; //[patch]
-const String apiListAddBook = '/list/add'; //[post]
-const String apiListRemoveBook = '/list/remove'; //[post]
+const String apiGetLists = '/mylists'; //[get]
+const String apiCreateBookList = '/mylists'; //[post]
+String apiDeleteBookList(id) => "/mylists/$id"; //[delete][id]
+String apiUpdateBookList(id) => '/mylists/$id'; //[post]
+String apiShowBookList(id) => '/mylists/$id'; //[get]
+String apiListAddBook({required id, required book}) =>
+    '/mylists/$id/add/$book'; //[get]
+String apiListRemoveBook({required id, required book}) =>
+    '/mylists/$id/remove/$book'; //[get]
+const String homeData = '/home'; //[get]
 
 //RegisterForm
 const int minPasswordLength = 6;
@@ -45,13 +50,13 @@ const Map<String, String> bookLanguage = {
 
 //BookLists
 const String defaultBookListStatus = 'public';
-const Map<String, String> bookListNames = {
+const Map<String, String> defaultBookLists = {
   "read": "Okundu",
   "to read": "Okunacak",
   "currently reading": "Şu anda okunuyor"
 };
 const Map<String, String> bookListsStatus = {
-  "public": "Herkese açık",
+  "public": "Herkese Açık",
   "private": "Özel"
 };
 const int minListNameLength = 3;

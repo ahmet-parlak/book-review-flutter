@@ -1,11 +1,10 @@
-import 'package:book_review/consts/consts.dart' as constants;
 import 'package:book_review/services/book_service.dart';
+import 'package:book_review/widgets/appbar/page_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/book_data.dart';
 import '../models/book_model.dart';
-import '../widgets/back_button.dart';
 import '../widgets/book_detail_card.dart';
 
 class BookDetailPage extends StatelessWidget {
@@ -58,19 +57,9 @@ class _BookDetailPageScaffoldState extends State<BookDetailPageScaffold> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        titleSpacing: 0,
-        title: Image.asset(constants.logoBanner, width: 240),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.all(6.0),
-            child: BackButtonWidget(),
-          )
-        ],
-      ),
+      appBar: const PageAppBar(),
       body: ListView(physics: const BouncingScrollPhysics(), children: [
-        const BookDetailCardWidget(/*book: context.watch<BookData>().book*/),
+        const BookDetailCardWidget(),
         const SizedBox(height: 16),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12.0),

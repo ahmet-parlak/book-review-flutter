@@ -15,7 +15,7 @@ class BookCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 2,
+      elevation: 0,
       child: InkWell(
         onTap: () {
           Navigator.push(
@@ -24,11 +24,11 @@ class BookCardWidget extends StatelessWidget {
                 builder: (context) => BookDetailPage(book: book),
               ));
         },
-        child: Row(
+        child: Column(
           children: [
             SizedBox(
-                height: 140,
-                width: 100,
+                height: 94,
+                width: 70,
                 child: Image.network(
                   book.photo ?? '',
                   fit: BoxFit.fitHeight,
@@ -39,55 +39,64 @@ class BookCardWidget extends StatelessWidget {
                   errorBuilder: (context, error, stackTrace) =>
                       Image.asset(constants.bookCoverNotAvailable),
                 )),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Column(
-                  children: [
-                    Text(
-                      book.title ?? '',
+            const SizedBox(height: 4),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                children: [
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Text(
+                      book.title ?? '-',
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.fade,
+                      maxLines: 1,
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                  ),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Text(
+                      book.author?.name ?? '-',
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.fade,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Text(
+                      book.publisher?.name ?? '-',
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleLarge
-                          ?.copyWith(color: Colors.black),
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
-                    const SizedBox(height: 5),
-                    Text(book.author?.name ?? '',
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.titleMedium),
-                    const SizedBox(height: 1),
-                    Text(book.publisher?.name ?? '',
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.titleMedium,
-                        overflow: TextOverflow.ellipsis),
-                    const SizedBox(height: 6),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        RatingBar.builder(
-                          initialRating: book.rating?.toDouble() ?? 0,
-                          minRating: 0,
-                          direction: Axis.horizontal,
-                          allowHalfRating: true,
-                          ignoreGestures: true,
-                          itemCount: 5,
-                          itemSize: 20,
-                          itemBuilder: (context, _) => Icon(
-                            Icons.star,
-                            color: Theme.of(context).colorScheme.secondary,
-                          ),
-                          onRatingUpdate: (rating) {},
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      RatingBar.builder(
+                        initialRating: book.rating?.toDouble() ?? 0,
+                        minRating: 0,
+                        direction: Axis.horizontal,
+                        allowHalfRating: true,
+                        ignoreGestures: true,
+                        itemCount: 5,
+                        itemSize: 14,
+                        itemBuilder: (context, _) => Icon(
+                          Icons.star,
+                          color: Theme.of(context).colorScheme.secondary,
                         ),
-                        const SizedBox(width: 5),
-                        Text('(${book.reviewCount ?? ''})')
-                      ],
-                    )
-                  ],
-                ),
+                        onRatingUpdate: (rating) {},
+                      ),
+                      const SizedBox(width: 5),
+                      Text(
+                        '(${book.reviewCount ?? ''})',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      )
+                    ],
+                  )
+                ],
               ),
             )
           ],

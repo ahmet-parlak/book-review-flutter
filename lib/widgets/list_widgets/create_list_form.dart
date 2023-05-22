@@ -6,6 +6,7 @@ class CreateListFormWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final searchFormKey = GlobalKey<FormState>();
     final TextEditingController textFieldController = TextEditingController();
     return Container(
       padding: EdgeInsets.only(
@@ -25,20 +26,32 @@ class CreateListFormWidget extends StatelessWidget {
             Container(
               padding: const EdgeInsetsDirectional.symmetric(vertical: 14),
               width: MediaQuery.of(context).size.width * 0.90,
-              child: TextField(
-                controller: textFieldController,
-                autofocus: true,
-                decoration: const InputDecoration(
-                  hintText: 'Liste Adı',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                ),
-                onEditingComplete: () {
-                  String text = textFieldController.value.text.trim();
-                  if (text.length >= constants.minListNameLength) {
-                    Navigator.pop(context, text);
-                  }
-                },
+              child: Form(
+                key: searchFormKey,
+                child: TextFormField(
+                    autofocus: true,
+                    controller: textFieldController,
+                    decoration: const InputDecoration(
+                      hintText: 'Liste Adı',
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                    ),
+                    onEditingComplete: () {
+                      bool? formIsValid =
+                          searchFormKey.currentState?.validate();
+                      if (formIsValid ?? false) {
+                        String text = textFieldController.value.text.trim();
+                        Navigator.pop(context, text);
+                      }
+                    },
+                    validator: (value) {
+                      if ((value?.trim().length ?? 0) <
+                          constants.minListNameLength) {
+                        return 'Liste adı en az ${constants.minListNameLength} karakterden oluşmalı';
+                      } else {
+                        return null;
+                      }
+                    }),
               ),
             ),
           ],

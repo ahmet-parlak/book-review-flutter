@@ -1,3 +1,4 @@
+import 'package:book_review/consts/sizes.dart' as sizes;
 import 'package:book_review/widgets/search_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +22,7 @@ class _HomeViewState extends State<HomeView> {
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
-        title: Image.asset(logoPath, width: 240),
+        title: Image.asset(logoPath, width: sizes.appBarBannerWidth),
         actions: [
           IconButton(
             onPressed: () {

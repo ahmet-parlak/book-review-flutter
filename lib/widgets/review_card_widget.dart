@@ -31,8 +31,8 @@ class ReviewCard extends StatelessWidget {
                 Row(
                   children: [
                     Text(review.user?.name ?? '',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    SizedBox(width: 10),
+                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                    const SizedBox(width: 10),
                     Text(DateFormat('dd.MM.yyyy')
                         .format(DateTime.parse(review.date ?? '')))
                   ],
@@ -51,8 +51,8 @@ class ReviewCard extends StatelessWidget {
                   ),
                   onRatingUpdate: (rating) {},
                 ),
-                SizedBox(height: 5),
-                Container(
+                const SizedBox(height: 5),
+                SizedBox(
                     width: MediaQuery.of(context).size.width * 0.8,
                     child: Text(
                       review.review ?? '',

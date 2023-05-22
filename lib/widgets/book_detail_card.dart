@@ -1,8 +1,10 @@
+import 'package:book_review/consts/colors.dart' as colors;
 import 'package:book_review/consts/consts.dart' as constants;
+import 'package:book_review/helpers/snackbar_helper.dart';
 import 'package:book_review/models/book_data.dart';
 import 'package:book_review/models/book_model.dart';
 import 'package:book_review/models/create_review.dart';
-import 'package:book_review/models/user_data.dart';
+import 'package:book_review/models/my_lists_data.dart';
 import 'package:book_review/services/book_service.dart';
 import 'package:book_review/widgets/dialogs/custom_alert_dialog.dart';
 import 'package:book_review/widgets/list_widgets/create_list_form.dart';
@@ -19,13 +21,22 @@ class BookDetailCardWidget extends StatelessWidget {
   const BookDetailCardWidget({super.key});
 
   //final Book book;
+
   @override
   Widget build(BuildContext context) {
     final book = context.watch<BookData>().book;
     final List<String> categories = [];
     final List? categoriesList = book.categories;
-    final List userLists = context.watch<UserData>().bookLists;
+    final List userLists = context.watch<MyListsData>().bookLists;
     final List<DropdownMenuItem> bookListDropdownItems = [];
+    final bookInfoHeadlineTheme =
+        Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 18);
+    final bookInfoTheme = Theme.of(context)
+        .textTheme
+        .titleMedium
+        ?.copyWith(fontWeight: FontWeight.w400);
+
+    const infoSeperator = SizedBox(height: 4.0);
 
     for (var bookList in userLists) {
       bookListDropdownItems.add(buildDropdownMenuItem(bookList));
@@ -45,6 +56,20 @@ class BookDetailCardWidget extends StatelessWidget {
           context: context,
           builder: (context) =>
               CustomAlertDialog(message: message, title: 'Hata'));
+    }
+
+    void bookAddedToListAction(Map isAdded) {
+      if (isAdded['success']) {
+        context.read<MyListsData>().fetchLists();
+        SnackBarHelper.showSnackBar(
+            context: context,
+            message: isAdded['data'],
+            icon: Icons.check_circle);
+      } else {
+        SnackBarHelper.showSnackBar(
+            context: context,
+            message: 'Kitap listeye eklenirken bir hata meydana geldi');
+      }
     }
 
     return Card(
@@ -99,146 +124,174 @@ class BookDetailCardWidget extends StatelessWidget {
                         textAlign: TextAlign.center,
                         style: Theme.of(context)
                             .textTheme
-                            .titleLarge
+                            .headlineMedium
                             ?.copyWith(color: Colors.black),
                       ),
                       const SizedBox(height: 8),
                       Row(children: [
-                        Text('Yazar: ',
-                            style: Theme.of(context).textTheme.headlineSmall),
+                        Text('Yazar: ', style: bookInfoHeadlineTheme),
                         Expanded(
                           child: Text(book.author?.name ?? '',
                               overflow: TextOverflow.clip,
-                              style: Theme.of(context).textTheme.titleMedium),
+                              style: bookInfoTheme),
                         )
                       ]),
+                      infoSeperator,
                       Row(children: [
-                        Text('Yayınevi: ',
-                            style: Theme.of(context).textTheme.headlineSmall),
+                        Text('Yayınevi: ', style: bookInfoHeadlineTheme),
                         Expanded(
                           child: Text(book.publisher?.name ?? '',
                               overflow: TextOverflow.clip,
-                              style: Theme.of(context).textTheme.titleMedium),
+                              style: bookInfoTheme),
                         )
                       ]),
+                      infoSeperator,
                       Row(children: [
-                        Text('Kategori: ',
-                            style: Theme.of(context).textTheme.headlineSmall),
+                        Text('Kategori: ', style: bookInfoHeadlineTheme),
                         Expanded(
                           child: Text(
                               (categories.isEmpty)
                                   ? '-'
                                   : categories.join(", "),
                               overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context).textTheme.titleMedium),
+                              style: bookInfoTheme),
                         )
                       ]),
+                      infoSeperator,
                       Row(children: [
-                        Text('Yayın Yılı: ',
-                            style: Theme.of(context).textTheme.headlineSmall),
+                        Text('Yayın Yılı: ', style: bookInfoHeadlineTheme),
                         Text(book.publicationYear ?? '',
                             overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.titleMedium)
+                            style: bookInfoTheme)
                       ]),
+                      infoSeperator,
                       Row(children: [
-                        Text('ISBN: ',
-                            style: Theme.of(context).textTheme.headlineSmall),
+                        Text('ISBN: ', style: bookInfoHeadlineTheme),
                         Text(book.isbn ?? '',
                             overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.titleMedium)
+                            style: bookInfoTheme)
                       ]),
+                      infoSeperator,
                       Row(children: [
-                        Text('Dil: ',
-                            style: Theme.of(context).textTheme.headlineSmall),
+                        Text('Dil: ', style: bookInfoHeadlineTheme),
                         Text(
                             constants.bookLanguage[book.language] ??
                                 (book.language ?? ''),
                             overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.titleMedium)
+                            style: bookInfoTheme)
                       ]),
+                      infoSeperator,
                       Row(children: [
-                        Text('Sayfa Sayısı: ',
-                            style: Theme.of(context).textTheme.headlineSmall),
+                        Text('Sayfa Sayısı: ', style: bookInfoHeadlineTheme),
                         Text(book.pages ?? '-',
                             overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.titleMedium)
+                            style: bookInfoTheme)
                       ]),
+                      infoSeperator,
                       ExpansionTile(
                         tilePadding: EdgeInsets.zero,
                         childrenPadding: EdgeInsets.zero,
-                        title: Text('Açıklama',
-                            style: Theme.of(context).textTheme.headlineSmall),
+                        title: Text('Açıklama', style: bookInfoHeadlineTheme),
                         children: [Text(book.description ?? '')],
                       ),
                       Row(children: [
                         Expanded(
                           flex: 3,
-                          child: DropdownButton(
-                            isExpanded: true,
-                            icon: Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Icon(Icons.arrow_drop_down_circle_rounded,
-                                  size: 20,
-                                  color: Theme.of(context).colorScheme.primary),
-                            ),
-                            items: [
-                              const DropdownMenuItem(
-                                  child: Text('Kitabı Listeye Ekle')),
-                              ...bookListDropdownItems,
-                              const DropdownMenuItem(
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: colors.dropDownWhite,
+                                borderRadius: BorderRadius.circular(10)),
+                            child: DropdownButton(
+                              underline: const SizedBox(),
+                              isExpanded: true,
+                              icon: Padding(
+                                padding: EdgeInsets.all(12.0),
+                                child: Icon(
+                                    Icons.arrow_drop_down_circle_rounded,
+                                    size: 20,
+                                    color: Theme.of(context).primaryColor),
+                              ),
+                              hint: Padding(
+                                padding: EdgeInsets.only(left: 8.0),
+                                child: Text('Kitabı Listeye Ekle',
+                                    style: TextStyle(
+                                        color: Theme.of(context).primaryColor)),
+                              ),
+                              dropdownColor:
+                                  Theme.of(context).primaryColorLight,
+                              borderRadius: BorderRadius.circular(8),
+                              items: [
+                                ...bookListDropdownItems,
+                                DropdownMenuItem(
                                   value: 'create',
-                                  child: Text('Liste Oluştur')),
-                            ],
-                            onChanged: (value) async {
-                              if (value != null) {
-                                if (value == 'create') {
-                                  String listName = await showModalBottomSheet(
-                                      isScrollControlled: true,
-                                      shape: const RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.vertical(
-                                              top: Radius.circular(20))),
-                                      context: context,
-                                      builder: (context) =>
-                                          const CreateListFormWidget());
-                                  if (listName.isNotEmpty) {
-                                    final response = await BookService(book.id)
-                                        .createList(listName: listName);
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8, horizontal: 0),
+                                    decoration: const BoxDecoration(
+                                        border: BorderDirectional(
+                                            top: BorderSide(
+                                                color: Colors.grey))),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: const [
+                                        Text(
+                                          'Yeni Liste Oluştur',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Icon(Icons.add_box_rounded),
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              ],
+                              onChanged: (value) async {
+                                if (value != null) {
+                                  if (value == 'create') {
+                                    String? listName =
+                                        await showModalBottomSheet(
+                                            isScrollControlled: true,
+                                            shape: const RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.vertical(
+                                                        top: Radius.circular(
+                                                            20))),
+                                            context: context,
+                                            builder: (context) =>
+                                                const CreateListFormWidget());
+                                    if (listName?.isNotEmpty != null) {
+                                      final response =
+                                          await BookService(book.id)
+                                              .createList(listName: listName!);
 
-                                    if (response['success'] == true) {
-                                      final data = response['data'];
-                                      if (data['state'] == 'success') {
-                                        showSuccessDialog(
-                                            message: data['message']);
-                                        if (data['newlist'] == 'true') {
-                                          Provider.of<UserData>(context,
-                                                  listen: false)
-                                              .addListFromData(data['list']);
+                                      if (response['success'] == true) {
+                                        final data = response['data'];
+                                        if (data['state'] == 'success') {
+                                          showSuccessDialog(
+                                              message: data['message']);
+                                          if (data['newlist'] == 'true') {
+                                            Provider.of<MyListsData>(context,
+                                                    listen: false)
+                                                .addListFromData(data['list']);
+                                          }
                                         }
+                                      } else {
+                                        showErrorDialog(
+                                            message: response['message'] ??
+                                                'Bir hata meydana geldi');
                                       }
-                                    } else {
-                                      showErrorDialog(
-                                          message: response['message'] ??
-                                              'Bir hata meydana geldi');
-                                    }
-                                  }
-                                } else {
-                                  final response = await BookService(book.id)
-                                      .addToList(listId: value);
-
-                                  if (response['success'] == true) {
-                                    final data = response['data'];
-                                    if (data['state'] == 'success') {
-                                      showSuccessDialog(
-                                          message: data['message']);
                                     }
                                   } else {
-                                    showErrorDialog(
-                                        message: response['message'] ??
-                                            'Bir hata meydana geldi');
+                                    final Map isAdded =
+                                        await BookService(book.id)
+                                            .addToList(listId: value);
+
+                                    bookAddedToListAction(isAdded);
                                   }
                                 }
-                              }
-                            },
+                              },
+                            ),
                           ),
                         ),
                         Expanded(
@@ -256,6 +309,7 @@ class BookDetailCardWidget extends StatelessWidget {
                           ),
                         )
                       ]),
+                      //
                       const SizedBox(height: 10),
                       book.userReview == null
                           ? ElevatedButton(
@@ -354,6 +408,7 @@ class BookDetailCardWidget extends StatelessWidget {
   DropdownMenuItem buildDropdownMenuItem(BookList bookList) {
     return DropdownMenuItem(
         value: bookList.id,
-        child: Text(constants.bookListNames[bookList.name] ?? bookList.name));
+        child:
+            Text(constants.defaultBookLists[bookList.name] ?? bookList.name));
   }
 }

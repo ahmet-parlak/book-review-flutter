@@ -1,10 +1,12 @@
+import 'package:book_review/models/home_data.dart';
 import 'package:book_review/models/publisher_model.dart';
+import 'package:book_review/widgets/book_card.dart';
+import 'package:book_review/widgets/loading_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../models/author_model.dart';
 import '../../models/book_model.dart';
-import '../../widgets/book_card.dart';
-import '../../widgets/menu_card.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -29,30 +31,89 @@ class HomePage extends StatelessWidget {
         publisher: Publisher(name: 'Can Yayınları'),
         rating: 4,
         reviewCount: 14);
-    //return const Placeholder();
-    return ListView(
+
+    /*return ListView(
+      physics: const BouncingScrollPhysics(),
       children: [
-        SizedBox(
-          height: MediaQuery.of(context).size.height * 0.65,
-          child: ListView(children: [
-            BookCardWidget(book: book),
-            BookCardWidget(book: book),
-            BookCardWidget(book: book),
-            BookCardWidget(book: book),
-            BookCardWidget(book: book),
-          ]),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Trend Kitaplar',
+              style: Theme.of(context)
+                  .textTheme
+                  .headlineMedium
+                  ?.copyWith(color: Theme.of(context).primaryColor),
+            ),
+            ...[
+              BookCardWidget(book: book),
+              BookCardWidget(book: book),
+              BookCardWidget(book: book),
+              BookCardWidget(book: book),
+              BookCardWidget(book: book),
+            ]
+          ],
         ),
-        SizedBox(
-            height: MediaQuery.of(context).size.height * 0.15,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: [
-                MenuCardWidget(imageUrl: menu1Url, title: 'Yüksek Puanlılar'),
-                MenuCardWidget(imageUrl: menu2Url, title: 'Çok Okunanlar'),
-                MenuCardWidget(imageUrl: menu3Url, title: 'Yeni Çıkanlar'),
-              ],
-            )),
       ],
+    );*/
+    return ChangeNotifierProvider<HomeData>(
+      create: (context) => HomeData(),
+      child: HomeGrid(book: book),
     );
+  }
+}
+
+class HomeGrid extends StatefulWidget {
+  const HomeGrid({
+    super.key,
+    required this.book,
+  });
+
+  final Book book;
+
+  @override
+  State<HomeGrid> createState() => _HomeGridState();
+}
+
+class _HomeGridState extends State<HomeGrid> {
+  @override
+  Widget build(BuildContext context) {
+    final homeData = context.watch<HomeData>().homeData;
+    /*return GridView.count(
+      physics: const BouncingScrollPhysics(),
+      crossAxisCount: 2,
+      children: [
+        ...[
+          BookCardWidget(book: homeData[0]['books'][0]),
+          BookCardWidget(book: book),
+          BookCardWidget(book: book),
+          BookCardWidget(book: book),
+          BookCardWidget(book: book),
+        ],
+      ],
+    );*/
+
+    return homeData.length == 0
+        ? LoadingIndicatorWidget()
+        : ListView(
+            physics: const BouncingScrollPhysics(),
+            children: homeData.map((section) {
+              List books = section['books'];
+              return Column(children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(section['title'],
+                      style: Theme.of(context).textTheme.headlineMedium),
+                ),
+                GridView.count(
+                  crossAxisCount: 2,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children:
+                      books.map((book) => BookCardWidget(book: book)).toList(),
+                )
+              ]);
+            }).toList(),
+          );
   }
 }

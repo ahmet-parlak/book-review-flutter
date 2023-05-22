@@ -1,10 +1,9 @@
-import 'package:book_review/widgets/back_button.dart';
+import 'package:book_review/widgets/appbar/page_app_bar.dart';
 import 'package:book_review/widgets/book_card.dart';
 import 'package:book_review/widgets/loading_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../consts/consts.dart' as constants;
 import '../models/book_model.dart';
 import '../models/search_data.dart';
 import '../services/search_service.dart';
@@ -59,20 +58,14 @@ class _SearchPageState extends State<SearchPage> {
     List<Book> books = Provider.of<SearchData>(context).getBooks();
     _nextPageUrl = Provider.of<SearchData>(context).getNextPageUrl();
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        titleSpacing: 0,
-        title: Image.asset(constants.logoBanner, width: 240),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.all(6.0),
-            child: BackButtonWidget(),
-          )
-        ],
-      ),
+      appBar: const PageAppBar(),
       body: books.isEmpty
           ? const Center(child: Text('Kitap Bulunamadı'))
-          : ListView.builder(
+          : GridView.builder(
+              physics: BouncingScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+              ),
               controller: controller,
               itemCount: books.length + 1,
               itemBuilder: (context, index) {
@@ -88,3 +81,17 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 }
+
+/*ListView.builder(
+              controller: controller,
+              itemCount: books.length + 1,
+              itemBuilder: (context, index) {
+                if (index < books.length) {
+                  return BookCardWidget(book: books[index], index: index);
+                } else {
+                  return _nextPageUrl != null
+                      ? const LoadingIndicatorWidget()
+                      : null;
+                }
+              },
+            )*/
