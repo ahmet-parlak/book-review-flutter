@@ -350,7 +350,7 @@ class ListBooks extends StatelessWidget {
                 children: [
                   const Padding(
                     padding: EdgeInsets.symmetric(vertical: 4.0),
-                    child: Text('Kitabı listeden kaldırmak için kaydırın'),
+                    child: Text('Kitabı listeden kaldırmak için yana kaydırın'),
                   ),
                   Container(
                     height: MediaQuery.of(context).size.height * 0.6,

@@ -14,14 +14,16 @@ class MyListsData extends ChangeNotifier {
   }
 
   void fetchLists() async {
-    final response =
-        await NetworkManager.instance.service.get(constants.apiGetLists);
-    final List bookList = response.data['book_lists'];
-    _bookLists.clear();
-    for (var element in bookList) {
-      _bookLists.add(BookList.fromData(element));
-    }
-    notifyListeners();
+    try {
+      final response =
+          await NetworkManager.instance.service.get(constants.apiGetLists);
+      final List bookList = response.data['book_lists'];
+      _bookLists.clear();
+      for (var element in bookList) {
+        _bookLists.add(BookList.fromData(element));
+      }
+      notifyListeners();
+    } catch (e) {}
   }
 
   void addListFromData(data) {

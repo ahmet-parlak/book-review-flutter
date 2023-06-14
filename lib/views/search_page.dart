@@ -81,17 +81,3 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 }
-
-/*ListView.builder(
-              controller: controller,
-              itemCount: books.length + 1,
-              itemBuilder: (context, index) {
-                if (index < books.length) {
-                  return BookCardWidget(book: books[index], index: index);
-                } else {
-                  return _nextPageUrl != null
-                      ? const LoadingIndicatorWidget()
-                      : null;
-                }
-              },
-            )*/

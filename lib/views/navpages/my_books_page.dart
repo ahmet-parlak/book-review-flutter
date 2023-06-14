@@ -1,4 +1,5 @@
 import 'package:book_review/views/navpages/mybooks/my_lists.dart';
+import 'package:book_review/views/navpages/mybooks/my_reviews.dart';
 import 'package:flutter/material.dart';
 
 class MyBooksPage extends StatelessWidget {
@@ -34,7 +35,7 @@ class MyBooksPage extends StatelessWidget {
                     physics: BouncingScrollPhysics(),
                     children: [
                       Center(child: MyLists()),
-                      Center(child: Placeholder()),
+                      Center(child: MyReviews()),
                     ],
                   ),
                 ),
