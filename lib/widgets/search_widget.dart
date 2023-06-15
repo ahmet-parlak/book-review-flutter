@@ -51,17 +51,18 @@ class _SearchWidgetState extends State<SearchWidget>
           isSearching = true;
         });
         FocusScope.of(context).unfocus();
+        final query = searchTextController.value.text.trim();
         /*Search Service Proc*/
-        final response =
-            await Search(query: searchTextController.value.text.trim())
-                .withQuery();
+        final response = await Search(query: query).withQuery();
 
         if (response['success']) {
           List books = response['data']['data'];
           searchDataProvider.setNextPageUrl(response['data']['next_page_url']);
           searchDataProvider.setPrevPageUrl(response['data']['prev_page_url']);
           searchDataProvider.loadBook(books);
+          searchDataProvider.setQuery(query);
         } else {
+          searchDataProvider.resetQuery();
           await showErrorMessage();
           turnBack();
         }

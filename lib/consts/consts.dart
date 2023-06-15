@@ -21,6 +21,7 @@ String apiListRemoveBook({required id, required book}) =>
     '/mylists/$id/remove/$book'; //[get]
 const String apiGetMyReviews = '/myreviews';
 String apiRemoveReview({required bookId}) => '/myreviews/$bookId'; //[delete]
+const String apiBookRequest = '/bookrequest'; //[post]
 const String homeData = '/home'; //[get]
 
 //RegisterForm

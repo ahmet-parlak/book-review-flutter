@@ -6,10 +6,20 @@ import 'book_model.dart';
 
 class SearchData with ChangeNotifier {
   final List<Book> _books = [];
+  String? _query;
   String? _nextPageUrl;
   String? _prevPageUrl;
 
   UnmodifiableListView<Book> getBooks() => UnmodifiableListView(_books);
+  String? get query => _query;
+
+  void setQuery(String text) {
+    _query = text;
+  }
+
+  void resetQuery() {
+    _query = null;
+  }
 
   void loadBook(books) {
     _books.clear();
