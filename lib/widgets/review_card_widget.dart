@@ -1,3 +1,4 @@
+import 'package:book_review/views/user_detail/user_detail_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
@@ -21,8 +22,17 @@ class ReviewCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CircleAvatar(
-              backgroundImage: NetworkImage(review.user?.photoUrl ?? ''),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => UserDetailView(user: review.user),
+                    ));
+              },
+              child: CircleAvatar(
+                backgroundImage: NetworkImage(review.user?.photoUrl ?? ''),
+              ),
             ),
             const SizedBox(width: 5),
             Column(

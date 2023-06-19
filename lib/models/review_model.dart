@@ -12,5 +12,5 @@ class Review {
       : rating = data['rating'],
         review = data['review'],
         date = data['updated_at'],
-        user = User.fromData(data['user']);
+        user = data['user'] != null ? User.fromData(data['user']) : null;
 }
