@@ -29,5 +29,5 @@ Please note that the mobile application requires an active internet connection a
 ## Preview
 
 <div align="center">
-<img src="project.gif" width="auto" width="300" height="300">
+<img src="project.gif" width="auto" width="360" height="380">
 </div>
